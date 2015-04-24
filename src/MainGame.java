@@ -5,7 +5,10 @@ import org.newdawn.slick.*;
 
 public class MainGame extends BasicGame
 {
+    //isendiväljad
     private Image field;
+    //private Music music;
+
 
     public MainGame(String gamename)
     {
@@ -15,6 +18,9 @@ public class MainGame extends BasicGame
     @Override
     public void init(GameContainer gc) throws SlickException {
         field = new Image("data/field.png");
+        //MUUSIKA
+        /*music = new Music("data/gamemusic.ogg"); //Frostbite(Original mix) by WarHector
+        music.loop();*/
     }
 
     @Override
@@ -23,8 +29,7 @@ public class MainGame extends BasicGame
     @Override
     public void render(GameContainer gc, Graphics g) throws SlickException
     {
-        field.draw(0,0);
-        //g.drawString("TESTINTESTINTESTIN", 300, 200);
+        field.draw(0,0); //siin hoitakse mänguväli ees
     }
 
     public static void main(String[] args)
