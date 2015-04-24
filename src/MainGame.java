@@ -14,6 +14,8 @@ public class MainGame extends BasicGame
     float playerSize = 35;
     private Player player1;
     //private Player player2;
+    private Player ball;
+
     private Shape upperBorder;
     private Shape bottomBorder;
     private Shape leftBorder;
@@ -23,9 +25,12 @@ public class MainGame extends BasicGame
     static int displayY = 500;
 
     float speed = 0.6f;
-    private float x = 250;
-    private float y = 250;
+    private float player1x = 250;
+    private float player1y = 250;
+    private float ballX = 400;
+    private float ballY = 250;
 
+    GamePhysics gamePhysics;
 
     public MainGame(String gamename)
     {
@@ -38,8 +43,10 @@ public class MainGame extends BasicGame
         //MUUSIKA
         /*music = new Music("data/gamemusic.ogg"); //Frostbite(Original mix) by WarHector
         music.loop();*/
-        player1 = new Player(x,y,playerSize);//x,y,raadius
-
+        player1 = new Player(player1x,player1y,playerSize, 11);//x,y,raadius, (inverted mass)
+        ball = new Player(ballX, ballY, 20, 10);
+        ball.setDx(0);
+        ball.setDy(0);
         //Borders
         upperBorder = new Line(0,0,displayX,0);
 
@@ -47,34 +54,50 @@ public class MainGame extends BasicGame
         bottomBorder = new Line(0,displayY, displayX,displayY);
         rightBorder = new Line(displayX, 0, displayX, displayY);
         middleBorder = new Line(displayX/2, 0, displayX/2, displayY);
+
+        gamePhysics = new GamePhysics();
     }
 
     @Override
     public void update(GameContainer gc, int delta) throws SlickException {
-        //see on suht kole, võiks midagi paremat välja mõelda
-
         Input input = gc.getInput();
+
+        //ball movement
+
+
         //control player1
+        float x1 = 0;
+        float y1 = 0;
+
         //up
         if(input.isKeyDown(Input.KEY_W) && !(player1.circle.intersects(upperBorder))){
-            player1.circle.setY(y - speed * delta);
-            y = y - speed * delta;//delta makes the speed run the same on ANY computer
+            y1 -= 1;
         }
         //down
         if(input.isKeyDown(Input.KEY_S) && !(player1.circle.intersects(bottomBorder))){
-            player1.circle.setY(y + speed * delta);
-            y = y + speed * delta;
+            y1 += 1;
         }
         //left
         if(input.isKeyDown(Input.KEY_A) && !(player1.circle.intersects(leftBorder))){
-            player1.circle.setX(x - speed * delta);
-            x = x - speed * delta;
+            x1 -= 1;
         }
         //right
         if(input.isKeyDown(Input.KEY_D) && !(player1.circle.intersects(middleBorder))){
-            player1.circle.setX(x + speed * delta);
-            x = x + speed * delta;
+            x1 += 1;
         }
+        //playermovement
+        double length = Math.sqrt(x1*x1+y1*y1);
+        if (length != 0){
+            x1 /= length;
+            y1 /= length;
+            x1 *= delta*speed;
+            y1 *= delta*speed;
+            player1x += x1;
+            player1y += y1;
+            player1.circle.setX(player1x);
+            player1.circle.setY(player1y);
+        }
+
 
 
 
@@ -91,7 +114,7 @@ public class MainGame extends BasicGame
         g.draw(bottomBorder);
         g.draw(middleBorder);
 
-        gc.setShowFPS(false);
+        //gc.setShowFPS(false);
         field.draw(0,0); //siin hoitakse mänguväli ees
 
         //players
@@ -99,7 +122,8 @@ public class MainGame extends BasicGame
         g.fill(player1.circle);
 
         //ball
-
+        g.setColor(Color.magenta);
+        g.fill(ball.circle);
     }
 
     public static void main(String[] args)
