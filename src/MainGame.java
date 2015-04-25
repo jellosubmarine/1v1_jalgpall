@@ -13,7 +13,7 @@ public class MainGame extends BasicGame
 
     float playerSize = 35;
     private Player player1;
-    //private Player player2;
+    private Player player2;
     private Player ball;
 
     private Shape upperBorder;
@@ -25,8 +25,11 @@ public class MainGame extends BasicGame
     static int displayY = 500;
 
     float speed = 0.6f;
+    float ballspeed = 0.9f; //hiljem palli liikumiseks kasutamine
     private float player1x = 250;
     private float player1y = 250;
+    private float player2x = 750;
+    private float player2y = 250;
     private float ballX = 400;
     private float ballY = 250;
 
@@ -42,8 +45,9 @@ public class MainGame extends BasicGame
         field = new Image("data/field.png");
         //MUUSIKA
         /*music = new Music("data/gamemusic.ogg"); //Frostbite(Original mix) by WarHector
-        music.loop();*/
-        player1 = new Player(player1x,player1y,playerSize);//x,y,raadius, (inverted mass)
+        music.loop();*/ //testimiseks välja kommitud
+        player1 = new Player(player1x,player1y,playerSize);//x,y,raadius
+        player2 = new Player(player2x, player2y, playerSize);
         ball = new Player(ballX, ballY, 20);
 
         //Borders
@@ -84,17 +88,51 @@ public class MainGame extends BasicGame
         if(input.isKeyDown(Input.KEY_D) && !(player1.circle.intersects(middleBorder))){
             x1 += 1;
         }
+
+        //control player2
+        float x2 = 0;
+        float y2 = 0;
+
+        //up
+        if(input.isKeyDown(Input.KEY_UP) && !(player2.circle.intersects(upperBorder))){
+            y2 -= 1;
+        }
+        //down
+        if(input.isKeyDown(Input.KEY_DOWN) && !(player2.circle.intersects(bottomBorder))){
+            y2 += 1;
+        }
+        //left
+        if(input.isKeyDown(Input.KEY_LEFT) && !(player2.circle.intersects(middleBorder))){
+            x2 -= 1;
+        }
+        //right
+        if(input.isKeyDown(Input.KEY_RIGHT) && !(player2.circle.intersects(rightBorder))){
+            x2 += 1;
+        }
+
+
         //playermovement
-        double length = Math.sqrt(x1*x1+y1*y1);
-        if (length != 0){
-            x1 /= length;
-            y1 /= length;
+        double length1 = Math.sqrt(x1*x1+y1*y1);
+        if (length1 != 0){
+            x1 /= length1;
+            y1 /= length1;
             x1 *= delta*speed;
             y1 *= delta*speed;
             player1x += x1;
             player1y += y1;
             player1.circle.setX(player1x);
             player1.circle.setY(player1y);
+        }
+        double length2 = Math.sqrt(x2*x2+y2*y2);
+        if (length2 != 0){
+            x2 /= length2;
+            y2 /= length2;
+            x2 *= delta*speed;
+            y2 *= delta*speed;
+            player2x += x2;
+            player2y += y2;
+            player2.circle.setX(player2x);
+            player2.circle.setY(player2y);
         }
 
 
@@ -119,7 +157,7 @@ public class MainGame extends BasicGame
         //players
         g.setColor(Color.red);
         g.fill(player1.circle);
-
+        g.fill(player2.circle);
         //ball
         //g.setColor(Color.magenta);
         //g.fill(ball.circle);
@@ -130,7 +168,7 @@ public class MainGame extends BasicGame
         try
         {
             AppGameContainer appgc;
-            appgc = new AppGameContainer(new MainGame("Jalka"));
+            appgc = new AppGameContainer(new MainGame("Jalka? More like õhuhoki.."));
             appgc.setTargetFrameRate(120);
             //appgc.setVSync(true);
             appgc.setDisplayMode(displayX, displayY, false);
