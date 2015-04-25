@@ -43,10 +43,9 @@ public class MainGame extends BasicGame
         //MUUSIKA
         /*music = new Music("data/gamemusic.ogg"); //Frostbite(Original mix) by WarHector
         music.loop();*/
-        player1 = new Player(player1x,player1y,playerSize, 11);//x,y,raadius, (inverted mass)
-        ball = new Player(ballX, ballY, 20, 10);
-        ball.setDx(0);
-        ball.setDy(0);
+        player1 = new Player(player1x,player1y,playerSize);//x,y,raadius, (inverted mass)
+        ball = new Player(ballX, ballY, 20);
+
         //Borders
         upperBorder = new Line(0,0,displayX,0);
 
@@ -122,8 +121,8 @@ public class MainGame extends BasicGame
         g.fill(player1.circle);
 
         //ball
-        g.setColor(Color.magenta);
-        g.fill(ball.circle);
+        //g.setColor(Color.magenta);
+        //g.fill(ball.circle);
     }
 
     public static void main(String[] args)

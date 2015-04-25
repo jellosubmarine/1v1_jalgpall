@@ -4,15 +4,14 @@ public class GamePhysics {
     public GamePhysics() {
     }
     //USELESSSSSS
-    public void elasticCollision(Player player, Player ball){
+    /*public void elasticCollision(Player player, Player ball){
         Vector2f relativeVelocity = new Vector2f(ball.getDx()-player.getDx(), ball.getDy()-player.getDy());
         Vector2f normal = relativeVelocity.getNormal();
         float velAlongNormal = relativeVelocity.dot(normal);
         System.out.println(velAlongNormal);
-        /*
         if (velAlongNormal>0){
             return;
-        }*/
+        }
         //impulse scalar
         float j = -1*velAlongNormal;
         j /= player.getInverseMass() + ball.getInverseMass();
@@ -23,6 +22,7 @@ public class GamePhysics {
         player.translateDxDy(-playerVelocity.getX(), -playerVelocity.getY());
         ball.translateDxDy(ballVelocity.getX(), ballVelocity.getY());
     }
+    */
 
 
     public void collisionDirection(Player player, Player ball){
