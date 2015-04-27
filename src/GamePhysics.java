@@ -1,3 +1,4 @@
+import org.newdawn.slick.geom.Line;
 import org.newdawn.slick.geom.Vector2f;
 
 public class GamePhysics {
@@ -26,7 +27,11 @@ public class GamePhysics {
 
 
     public void collisionDirection(Player player, Player ball){
-
+        Vector2f newDirection = new Vector2f(ball.circle.getCenterX()-player.circle.getCenterX(), ball.circle.getCenterY()-player.circle.getCenterY());
+        ball.direction  = newDirection.normalise();
+    }
+    public void collisionDirectionWithWall(Player ball, int x, int y){
+        ball.direction = new Vector2f(ball.direction.getX()*x, ball.direction.getY()*y);
     }
 
 }

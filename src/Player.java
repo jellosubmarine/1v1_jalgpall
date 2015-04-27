@@ -7,7 +7,7 @@ public class Player {
     private float r;
     Circle circle;
     //suunavektor
-    Vector2f direction;
+    Vector2f direction = new Vector2f();
     private float inverseMass;
 
     Player(float x, float y, float r){
@@ -21,4 +21,5 @@ public class Player {
     public float getInverseMass() {
         return inverseMass;
     }
+
 }

@@ -4,6 +4,7 @@ import java.util.logging.Logger;
 import org.newdawn.slick.*;
 import org.newdawn.slick.geom.Line;
 import org.newdawn.slick.geom.Shape;
+import org.newdawn.slick.geom.Vector2f;
 
 public class MainGame extends BasicGame
 {
@@ -25,12 +26,12 @@ public class MainGame extends BasicGame
     static int displayY = 500;
 
     float speed = 0.6f;
-    float ballspeed = 0.9f; //hiljem palli liikumiseks kasutamine
+    float ballspeed = 0.4f; //palli liikumiskiirus
     private float player1x = 250;
     private float player1y = 250;
     private float player2x = 750;
     private float player2y = 250;
-    private float ballX = 400;
+    private float ballX = 500;
     private float ballY = 250;
 
     GamePhysics gamePhysics;
@@ -49,6 +50,7 @@ public class MainGame extends BasicGame
         player1 = new Player(player1x,player1y,playerSize);//x,y,raadius
         player2 = new Player(player2x, player2y, playerSize);
         ball = new Player(ballX, ballY, 20);
+        ball.direction = new Vector2f(0,0);
 
         //Borders
         upperBorder = new Line(0,0,displayX,0);
@@ -64,10 +66,32 @@ public class MainGame extends BasicGame
     @Override
     public void update(GameContainer gc, int delta) throws SlickException {
         Input input = gc.getInput();
-
+        float x3 = ball.direction.getX();
+        float y3 = ball.direction.getY();
         //ball movement
-
-
+        if (ball.circle.intersects(player1.circle)){
+            gamePhysics.collisionDirection(player1, ball);
+        }
+        else if(ball.circle.intersects(player2.circle)){
+            gamePhysics.collisionDirection(player2, ball);
+        }
+        else if(ball.circle.intersects(upperBorder) || ball.circle.intersects(bottomBorder)){
+            gamePhysics.collisionDirectionWithWall(ball, 1, -1);
+        }
+        else if(ball.circle.intersects(rightBorder) || ball.circle.intersects(leftBorder)){
+            gamePhysics.collisionDirectionWithWall(ball, -1, 1);
+        }
+        double length3 = ball.direction.length();
+        if (length3 != 0) {
+            x3 /= length3;
+            y3 /= length3;
+            x3 *= delta * ballspeed;
+            y3 *= delta * ballspeed;
+            ballX += x3;
+            ballY += y3;
+            ball.circle.setX(ballX);
+            ball.circle.setY(ballY);
+        }
         //control player1
         float x1 = 0;
         float y1 = 0;
@@ -159,8 +183,8 @@ public class MainGame extends BasicGame
         g.fill(player1.circle);
         g.fill(player2.circle);
         //ball
-        //g.setColor(Color.magenta);
-        //g.fill(ball.circle);
+        g.setColor(Color.white);
+        g.fill(ball.circle);
     }
 
     public static void main(String[] args)
