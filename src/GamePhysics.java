@@ -34,4 +34,48 @@ public class GamePhysics {
         ball.direction = new Vector2f(ball.direction.getX()*x, ball.direction.getY()*y);
     }
 
+    public boolean collisionDetection(Player player, Player ball){
+        float x = player.circle.getCenterX()-ball.circle.getCenterX();
+        float y = player.circle.getCenterY()-ball.circle.getCenterY();
+        double distance = Math.sqrt(x*x+y*y);
+        double minimalDistance = player.circle.getBoundingCircleRadius()+ball.circle.getBoundingCircleRadius();
+        if(distance <= minimalDistance){
+            return true;
+        }
+        else{
+            return false;
+        }
+    }
+    //vajab refactorimist, suht halvasti kirjutatud tuleb see
+    public boolean collisionDetectionWithBorder(Player ball, String border){
+        float radius = ball.circle.getBoundingCircleRadius();
+        float x = ball.circle.getCenterX();
+        float y = ball.circle.getCenterY();
+        if(border.equals("upper")){
+            if((y-radius <= 0)){
+                return true;
+            }
+            else return false;
+        }
+        else if(border.equals("bottom")){
+            if((y+radius >= 500)){
+                return true;
+            }
+            else return false;
+        }
+        if(border.equals("left")){
+            if((x-radius <= 0)){
+                return true;
+            }
+            else return false;
+        }
+        if(border.equals("right")){
+            if((x+radius >= 1000)){
+                return true;
+            }
+            else return false;
+        }
+        else return false;
+    }
+
 }

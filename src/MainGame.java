@@ -26,14 +26,17 @@ public class MainGame extends BasicGame
     static int displayY = 500;
 
     float speed = 0.6f;
-    float ballspeed = 0.4f; //palli liikumiskiirus
+    float ballspeed = 0.8f; //palli liikumiskiirus
     private float player1x = 250;
     private float player1y = 250;
     private float player2x = 750;
     private float player2y = 250;
     private float ballX = 500;
     private float ballY = 250;
-
+    int timeSinceLastVerticalCollision = 0;
+    int timeSinceLastHorizontalCollision = 0;
+    int timeSinceLastPlayer1Collision = 0;
+    int timeSinceLastPlayer2Collision = 0;
     GamePhysics gamePhysics;
 
     public MainGame(String gamename)
@@ -65,21 +68,46 @@ public class MainGame extends BasicGame
 
     @Override
     public void update(GameContainer gc, int delta) throws SlickException {
+        if (timeSinceLastHorizontalCollision != 0){
+            timeSinceLastHorizontalCollision--;
+        }
+        if(timeSinceLastVerticalCollision != 0){
+            timeSinceLastVerticalCollision--;
+        }
+        if(timeSinceLastPlayer1Collision != 0){
+            timeSinceLastPlayer1Collision--;
+        }
+        if(timeSinceLastPlayer2Collision != 0){
+            timeSinceLastPlayer2Collision--;
+        }
+
         Input input = gc.getInput();
         float x3 = ball.direction.getX();
         float y3 = ball.direction.getY();
         //ball movement
-        if (ball.circle.intersects(player1.circle)){
-            gamePhysics.collisionDirection(player1, ball);
+        if(timeSinceLastPlayer1Collision == 0) {
+            if (gamePhysics.collisionDetection(player1, ball)) {
+                gamePhysics.collisionDirection(player1, ball);
+                timeSinceLastPlayer1Collision = 15;
+            }
         }
-        else if(ball.circle.intersects(player2.circle)){
-            gamePhysics.collisionDirection(player2, ball);
+        if(timeSinceLastPlayer2Collision == 0) {
+            if (gamePhysics.collisionDetection(player2, ball)) {
+                gamePhysics.collisionDirection(player2, ball);
+                timeSinceLastPlayer2Collision = 15;
+            }
         }
-        else if(ball.circle.intersects(upperBorder) || ball.circle.intersects(bottomBorder)){
-            gamePhysics.collisionDirectionWithWall(ball, 1, -1);
+        if(timeSinceLastVerticalCollision == 0) {
+            if (gamePhysics.collisionDetectionWithBorder(ball, "upper") || gamePhysics.collisionDetectionWithBorder(ball, "bottom")) {
+                gamePhysics.collisionDirectionWithWall(ball, 1, -1);
+                timeSinceLastVerticalCollision = 20;
+            }
         }
-        else if(ball.circle.intersects(rightBorder) || ball.circle.intersects(leftBorder)){
-            gamePhysics.collisionDirectionWithWall(ball, -1, 1);
+        if(timeSinceLastHorizontalCollision == 0) {
+            if (gamePhysics.collisionDetectionWithBorder(ball, "right") || gamePhysics.collisionDetectionWithBorder(ball, "left")) {
+                gamePhysics.collisionDirectionWithWall(ball, -1, 1);
+                timeSinceLastHorizontalCollision = 20;
+            }
         }
         double length3 = ball.direction.length();
         if (length3 != 0) {
@@ -101,11 +129,11 @@ public class MainGame extends BasicGame
             y1 -= 1;
         }
         //down
-        if(input.isKeyDown(Input.KEY_S) && !(player1.circle.intersects(bottomBorder))){
+        if(input.isKeyDown(Input.KEY_S) && !player1.circle.intersects(bottomBorder)){
             y1 += 1;
         }
         //left
-        if(input.isKeyDown(Input.KEY_A) && !(player1.circle.intersects(leftBorder))){
+        if(input.isKeyDown(Input.KEY_A) && !player1.circle.intersects(leftBorder)){
             x1 -= 1;
         }
         //right
