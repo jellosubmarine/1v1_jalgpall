@@ -4,5 +4,6 @@ kasutada default konfiguratsiooni(WASD ja nooled ehk?)
 
 enum kasutus?
 */
+//TODO
 public class KeyboardControls {
 }

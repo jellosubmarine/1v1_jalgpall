@@ -3,6 +3,7 @@ import java.util.logging.Logger;
 
 import org.newdawn.slick.*;
 import org.newdawn.slick.geom.Line;
+import org.newdawn.slick.geom.Rectangle;
 import org.newdawn.slick.geom.Shape;
 import org.newdawn.slick.geom.Vector2f;
 
@@ -22,6 +23,10 @@ public class MainGame extends BasicGame
     private Shape leftBorder;
     private Shape rightBorder;
     private Shape middleBorder;
+
+    private Shape Goal1;
+    private Shape Goal2;
+
     static int displayX = 1000;
     static int displayY = 500;
 
@@ -39,6 +44,9 @@ public class MainGame extends BasicGame
     int timeSinceLastPlayer2Collision = 0;
     GamePhysics gamePhysics;
 
+    int player1Score = 0;
+    int player2Score = 0;
+
     public MainGame(String gamename)
     {
         super(gamename);
@@ -53,7 +61,7 @@ public class MainGame extends BasicGame
         player1 = new Player(player1x,player1y,playerSize);//x,y,raadius
         player2 = new Player(player2x, player2y, playerSize);
         ball = new Player(ballX, ballY, 20);
-        ball.direction = new Vector2f(0,0);
+        ball.direction = new Vector2f(0,1);
 
         //Borders
         upperBorder = new Line(0,0,displayX,0);
@@ -62,8 +70,12 @@ public class MainGame extends BasicGame
         bottomBorder = new Line(0,displayY, displayX,displayY);
         rightBorder = new Line(displayX, 0, displayX, displayY);
         middleBorder = new Line(displayX/2, 0, displayX/2, displayY);
-
+        //shitty physics
         gamePhysics = new GamePhysics();
+
+        //goals
+        Goal1 = new Rectangle(0, 200, 20, 100);
+        Goal2 = new Rectangle(displayX - 20, 200, 20, 100);
     }
 
     @Override
@@ -85,6 +97,26 @@ public class MainGame extends BasicGame
         float x3 = ball.direction.getX();
         float y3 = ball.direction.getY();
         //ball movement
+        if(ball.circle.intersects(Goal1)){
+            player2Score++;
+            System.out.println(player1Score + " : " + player2Score);//TODO teha graafiliseks ja pall peaks tagasi keskele minema
+            ball.circle.setX(500);
+            ball.circle.setY(250);
+            ball.direction = new Vector2f(0,1);
+            ballX = 500;
+            ballY = 250;
+
+        }
+        else if(ball.circle.intersects((Goal2))){
+            player1Score++;
+            System.out.println(player1Score + " : " + player2Score);
+            ball.circle.setX(500);
+            ball.circle.setY(250);
+            ball.direction = new Vector2f(0,1);
+            ballX = 500;
+            ballY = 250;
+        }
+
         if(timeSinceLastPlayer1Collision == 0) {
             if (gamePhysics.collisionDetection(player1, ball)) {
                 gamePhysics.collisionDirection(player1, ball);
@@ -213,6 +245,11 @@ public class MainGame extends BasicGame
         //ball
         g.setColor(Color.white);
         g.fill(ball.circle);
+
+        //goals
+        g.setColor(Color.transparent);
+        g.fill(Goal1);
+        g.fill(Goal2);
     }
 
     public static void main(String[] args)
