@@ -26,18 +26,21 @@ public class MainGame extends BasicGame
 
     private Shape Goal1;
     private Shape Goal2;
+    private Shape centerLine;
+    private Shape fieldDraw;
 
     static int displayX = 1000;
     static int displayY = 500;
 
     float speed = 0.6f;
     float ballspeed = 0.8f; //palli liikumiskiirus
-    private float player1x = 250;
-    private float player1y = 250;
-    private float player2x = 750;
-    private float player2y = 250;
-    private float ballX = 500;
-    private float ballY = 250;
+    private float player1x = 250-playerSize;
+    private float player1y = 250-playerSize;
+    private float player2x = 750-playerSize;
+    private float player2y = 250-playerSize;
+    private float ballX = 500-20;
+    private float ballY = 250-20;
+    private float ballSize = 20;
     int timeSinceLastVerticalCollision = 0;
     int timeSinceLastHorizontalCollision = 0;
     int timeSinceLastPlayer1Collision = 0;
@@ -47,6 +50,7 @@ public class MainGame extends BasicGame
     int player1Score = 0;
     int player2Score = 0;
 
+
     public MainGame(String gamename)
     {
         super(gamename);
@@ -54,7 +58,7 @@ public class MainGame extends BasicGame
 
     @Override
     public void init(GameContainer gc) throws SlickException {
-        field = new Image("data/field.png");
+        //field = new Image("data/field.png");
         //MUUSIKA
         /*music = new Music("data/gamemusic.ogg"); //Frostbite(Original mix) by WarHector
         music.loop();*/ //testimiseks välja kommitud
@@ -73,11 +77,24 @@ public class MainGame extends BasicGame
         //shitty physics
         gamePhysics = new GamePhysics();
 
-        //goals
+        //field
         Goal1 = new Rectangle(0, 200, 20, 100);
         Goal2 = new Rectangle(displayX - 20, 200, 20, 100);
+        centerLine = new Rectangle(displayX/2-5, 0, 10, displayY);
+        fieldDraw = new Rectangle(0,0,displayX, displayY);
     }
-
+    public void resetPositions(){
+        ballX = 500-ballSize;
+        ballY = 250-ballSize;
+        player1x = 250-playerSize;
+        player1y = 250-playerSize;
+        player2x = 750-playerSize;
+        player2y = 250-playerSize;
+        player1.circle.setX(player1x);
+        player1.circle.setY(player1y);
+        player2.circle.setX(player2x);
+        player2.circle.setY(player2y);
+    }
     @Override
     public void update(GameContainer gc, int delta) throws SlickException {
         if (timeSinceLastHorizontalCollision != 0){
@@ -99,22 +116,15 @@ public class MainGame extends BasicGame
         //ball movement
         if(ball.circle.intersects(Goal1)){
             player2Score++;
-            System.out.println(player1Score + " : " + player2Score);//TODO teha graafiliseks ja pall peaks tagasi keskele minema
-            ball.circle.setX(500);
-            ball.circle.setY(250);
+            System.out.println(player1Score + " : " + player2Score);//TODO teha graafiliseks
             ball.direction = new Vector2f(0,1);
-            ballX = 500;
-            ballY = 250;
-
+            resetPositions();
         }
         else if(ball.circle.intersects((Goal2))){
             player1Score++;
             System.out.println(player1Score + " : " + player2Score);
-            ball.circle.setX(500);
-            ball.circle.setY(250);
             ball.direction = new Vector2f(0,1);
-            ballX = 500;
-            ballY = 250;
+            resetPositions();
         }
 
         if(timeSinceLastPlayer1Collision == 0) {
@@ -236,20 +246,26 @@ public class MainGame extends BasicGame
         g.draw(middleBorder);
 
         //gc.setShowFPS(false);
-        field.draw(0,0); //siin hoitakse mänguväli ees
+        //field
+        g.setColor(Color.green);
+        g.fill(fieldDraw);
+        g.setColor(Color.white);
+        g.fill(centerLine);
+        //goals
+
+        g.fill(Goal1);
+        g.fill(Goal2);
 
         //players
         g.setColor(Color.red);
         g.fill(player1.circle);
+        g.setColor(Color.cyan);
         g.fill(player2.circle);
         //ball
-        g.setColor(Color.white);
+        g.setColor(Color.darkGray);
         g.fill(ball.circle);
 
-        //goals
-        g.setColor(Color.transparent);
-        g.fill(Goal1);
-        g.fill(Goal2);
+
     }
 
     public static void main(String[] args)
