@@ -1,7 +1,13 @@
+import java.awt.*;
+import java.awt.Font;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
+import javafx.scene.text.Text;
 import org.newdawn.slick.*;
+import org.newdawn.slick.Color;
+import org.newdawn.slick.Graphics;
+import org.newdawn.slick.Image;
 import org.newdawn.slick.geom.Line;
 import org.newdawn.slick.geom.Rectangle;
 import org.newdawn.slick.geom.Shape;
@@ -50,6 +56,8 @@ public class MainGame extends BasicGame
     int player1Score = 0;
     int player2Score = 0;
 
+    TrueTypeFont font;
+
 
     public MainGame(String gamename)
     {
@@ -82,6 +90,10 @@ public class MainGame extends BasicGame
         Goal2 = new Rectangle(displayX - 20, 200, 20, 100);
         centerLine = new Rectangle(displayX/2-5, 0, 10, displayY);
         fieldDraw = new Rectangle(0,0,displayX, displayY);
+
+        Font awtFont = new Font("Arial", Font.BOLD, 24);
+        font = new TrueTypeFont(awtFont, false);
+
     }
     public void resetPositions(){
         ballX = 500-ballSize;
@@ -264,6 +276,12 @@ public class MainGame extends BasicGame
         //ball
         g.setColor(Color.darkGray);
         g.fill(ball.circle);
+
+        //skoor
+
+        //g.setFont(new UnicodeFont(g.getFont().toString(), 12, false,false));
+        //g.drawString(String.valueOf(player1Score)+":"+String.valueOf(player2Score), 485,0);
+        font.drawString(484,0,String.valueOf(player1Score)+":"+String.valueOf(player2Score),Color.magenta);
 
 
     }
