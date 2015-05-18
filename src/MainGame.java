@@ -1,9 +1,6 @@
 import java.awt.*;
 import java.awt.Font;
-import java.io.File;
-import java.io.FileNotFoundException;
-import java.io.FileWriter;
-import java.io.IOException;
+import java.io.*;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -87,6 +84,15 @@ public class MainGame extends BasicGame
         player2 = new Player(player2x, player2y, playerSize);
         ball = new Player(ballX, ballY, 20);
         ball.direction = new Vector2f(0,1);
+
+        //kuntlikult lisatud failist lugemine
+        try {
+            BufferedReader sisse = new BufferedReader( new InputStreamReader(new FileInputStream("C:/temp/jalkanimed.txt")));
+            player1.setNimi(sisse.readLine());
+            player2.setNimi(sisse.readLine());
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
 
         //Borders
         upperBorder = new Line(0,0,displayX,0);
@@ -353,6 +359,7 @@ public class MainGame extends BasicGame
     {
         try
         {
+
             AppGameContainer appgc;
             appgc = new AppGameContainer(new MainGame("Jalka? More like õhuhoki.."));
             appgc.setTargetFrameRate(120);
@@ -364,5 +371,6 @@ public class MainGame extends BasicGame
         {
             Logger.getLogger(MainGame.class.getName()).log(Level.SEVERE, null, ex);
         }
+
     }
 }
