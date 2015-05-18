@@ -1,5 +1,9 @@
 import java.awt.*;
 import java.awt.Font;
+import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.FileWriter;
+import java.io.IOException;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -12,6 +16,7 @@ import org.newdawn.slick.geom.Line;
 import org.newdawn.slick.geom.Rectangle;
 import org.newdawn.slick.geom.Shape;
 import org.newdawn.slick.geom.Vector2f;
+import org.newdawn.slick.gui.GUIContext;
 
 public class MainGame extends BasicGame
 {
@@ -40,12 +45,12 @@ public class MainGame extends BasicGame
 
     float speed = 0.6f;
     float ballspeed = 0.8f; //palli liikumiskiirus
-    private float player1x = 250-playerSize;
-    private float player1y = 250-playerSize;
-    private float player2x = 750-playerSize;
-    private float player2y = 250-playerSize;
-    private float ballX = 500-20;
-    private float ballY = 250-20;
+    private float player1x = 250;
+    private float player1y = 250;
+    private float player2x = 750;
+    private float player2y = 250;
+    private float ballX = 500;
+    private float ballY = 250;
     private float ballSize = 20;
     int timeSinceLastVerticalCollision = 0;
     int timeSinceLastHorizontalCollision = 0;
@@ -60,6 +65,11 @@ public class MainGame extends BasicGame
 
     int sekundilugeja=3;
     long kulunudaeg = 0;
+    long kulunudaeg1 = 0;
+
+    int maxskoor=1;
+
+    boolean kirjutatud = false;
 
 
     public MainGame(String gamename)
@@ -97,6 +107,8 @@ public class MainGame extends BasicGame
         Font awtFont = new Font("Arial", Font.BOLD, 24);
         font = new TrueTypeFont(awtFont, false);
 
+        resetPositions();
+
     }
     public void resetPositions(){
         ballX = 500-ballSize;
@@ -122,7 +134,7 @@ public class MainGame extends BasicGame
             }
         }
 
-        if (sekundilugeja<0) {
+        if (sekundilugeja<0 && player1Score!=maxskoor && player2Score!=maxskoor) {
             if (timeSinceLastHorizontalCollision != 0){
                 timeSinceLastHorizontalCollision--;
             }
@@ -190,9 +202,18 @@ public class MainGame extends BasicGame
             float x1 = 0;
             float y1 = 0;
 
+            /*KeyboardControls nupud = new KeyboardControls();
 
+            int number = nupud.loe();
+            StringBuilder sõna = new StringBuilder("KEY_");
+            sõna.append("W");
+            String minusõna = sõna.toString();
+
+            System.out.println(Input.minusõna);
+
+            int kolm = Input.KEY_W;*/
             //up
-            if(input.isKeyDown(Input.KEY_W) && !(player1.circle.intersects(upperBorder))){
+            if(input.isKeyDown(17) && !(player1.circle.intersects(upperBorder))){
                 y1 -= 1;
             }
             //down
@@ -254,6 +275,14 @@ public class MainGame extends BasicGame
                 player2.circle.setY(player2y);
             }
         }
+        else if (player1Score==maxskoor || player2Score==maxskoor) {
+            if (kulunudaeg1<2000){
+                kulunudaeg1+=delta;
+            }
+            else {
+                kirjutatud=true;
+            }
+        }
 
 
     }
@@ -292,8 +321,31 @@ public class MainGame extends BasicGame
         //skoor
         font.drawString(470,0,String.valueOf(player1Score)+"  :  "+String.valueOf(player2Score),Color.magenta);
 
+
+
+
         if (sekundilugeja>-1) {
             font.drawString(470,250,String.valueOf(sekundilugeja));
+        }
+
+        if (player1Score==maxskoor || player2Score==maxskoor){
+            if (player1Score==maxskoor) {
+                font.drawString(470,250,"Võitis 1.mängija");
+            } else {
+                font.drawString(470,250,"Võitis 2.mängija");
+            }
+            if (kirjutatud) {
+                try {
+                    FileWriter kirjutaja = new FileWriter(new File("C:/temp/1v1jalkaskoorid.txt"), true);
+                    kirjutaja.write(player1Score + ":" + player2Score );
+                    kirjutaja.write("\r\n");
+                    kirjutaja.close();
+                    kirjutatud = false;
+                    System.exit(0);
+                } catch (IOException e) {
+                    System.out.println("Failiga jama");
+                }
+            }
         }
     }
 
