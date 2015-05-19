@@ -19,7 +19,7 @@ public class MainGame extends BasicGame
 {
     //isendiväljad
     private Image field;
-    //private Music music;
+    private Music music;
 
     float playerSize = 35;
     private Player player1;
@@ -64,7 +64,7 @@ public class MainGame extends BasicGame
     long kulunudaeg = 0;
     long kulunudaeg1 = 0;
 
-    int maxskoor=1;
+    int maxskoor=2;
 
     boolean kirjutatud = false;
 
@@ -76,18 +76,17 @@ public class MainGame extends BasicGame
 
     @Override
     public void init(GameContainer gc) throws SlickException {
-        //field = new Image("data/field.png");
         //MUUSIKA
-        /*music = new Music("data/gamemusic.ogg"); //Frostbite(Original mix) by WarHector
-        music.loop();*/ //testimiseks välja kommitud
+        music = new Music("data/gamemusic.ogg"); //Frostbite(Original mix) by WarHector
+        music.loop(); //testimiseks välja kommitud
         player1 = new Player(player1x,player1y,playerSize);//x,y,raadius
         player2 = new Player(player2x, player2y, playerSize);
         ball = new Player(ballX, ballY, 20);
         ball.direction = new Vector2f(0,1);
 
-        //kuntlikult lisatud failist lugemine
+        //kunstlikult lisatud failist lugemine
         try {
-            BufferedReader sisse = new BufferedReader( new InputStreamReader(new FileInputStream("C:/temp/jalkanimed.txt")));
+            BufferedReader sisse = new BufferedReader( new InputStreamReader(new FileInputStream("data/jalkanimed.txt")));
             player1.setNimi(sisse.readLine());
             player2.setNimi(sisse.readLine());
         } catch (IOException e) {
@@ -325,7 +324,7 @@ public class MainGame extends BasicGame
         g.fill(ball.circle);
 
         //skoor
-        font.drawString(470,0,String.valueOf(player1Score)+"  :  "+String.valueOf(player2Score),Color.magenta);
+        font.drawString(470,0,String.valueOf(player1Score)+"  :  "+String.valueOf(player2Score),Color.black);
 
 
 
@@ -336,18 +335,18 @@ public class MainGame extends BasicGame
 
         if (player1Score==maxskoor || player2Score==maxskoor){
             if (player1Score==maxskoor) {
-                font.drawString(470,250,"Võitis 1.mängija");
+                font.drawString(470,250,"Võitis " + player1.nimi);
             } else {
-                font.drawString(470,250,"Võitis 2.mängija");
+                font.drawString(470,250,"Võitis " + player2.nimi);
             }
             if (kirjutatud) {
                 try {
-                    FileWriter kirjutaja = new FileWriter(new File("C:/temp/1v1jalkaskoorid.txt"), true);
+                    FileWriter kirjutaja = new FileWriter(new File("data/skoorid.txt"), true);
                     kirjutaja.write(player1Score + ":" + player2Score );
                     kirjutaja.write("\r\n");
                     kirjutaja.close();
                     kirjutatud = false;
-                    System.exit(0);
+                    gc.exit();
                 } catch (IOException e) {
                     System.out.println("Failiga jama");
                 }
@@ -355,13 +354,12 @@ public class MainGame extends BasicGame
         }
     }
 
-    public static void main(String[] args)
-    {
+    public static void main(String[] args){
         try
         {
 
             AppGameContainer appgc;
-            appgc = new AppGameContainer(new MainGame("Jalka? More like õhuhoki.."));
+            appgc = new AppGameContainer(new MainGame("Airhockey v0.01 Alpha"));
             appgc.setTargetFrameRate(120);
             //appgc.setVSync(true);
             appgc.setDisplayMode(displayX, displayY, false);

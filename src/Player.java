@@ -19,6 +19,7 @@ public class Player {
         this.inverseMass = inverseMass;
     }
 
+
     public void setNimi(String nimi){
         this.nimi=nimi;
     }
