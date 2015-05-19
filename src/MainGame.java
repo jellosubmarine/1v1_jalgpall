@@ -15,6 +15,8 @@ import org.newdawn.slick.geom.Shape;
 import org.newdawn.slick.geom.Vector2f;
 import org.newdawn.slick.gui.GUIContext;
 
+import javax.swing.*;
+
 public class MainGame extends BasicGame
 {
     //isendiväljad
@@ -64,7 +66,7 @@ public class MainGame extends BasicGame
     long kulunudaeg = 0;
     long kulunudaeg1 = 0;
 
-    int maxskoor=2;
+    static int maxskoor=2;
 
     boolean kirjutatud = false;
 
@@ -357,7 +359,8 @@ public class MainGame extends BasicGame
     public static void main(String[] args){
         try
         {
-
+            String input = JOptionPane.showInputDialog("Mitmeni mäng käib?");
+            maxskoor = Integer.parseInt(input);
             AppGameContainer appgc;
             appgc = new AppGameContainer(new MainGame("Airhockey v0.01 Alpha"));
             appgc.setTargetFrameRate(120);
